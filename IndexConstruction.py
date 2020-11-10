@@ -10,7 +10,7 @@ def get_word_ngrams(word, n):
     return ngrams
 
 
-def get_header_positional_index(text, header, docID, index, all_words):
+def add_header_positional_index(text, header, docID, index, all_words):
     for posID in range(len(text)):
         word = text[posID]
         if word not in index:
@@ -24,25 +24,49 @@ def get_header_positional_index(text, header, docID, index, all_words):
         all_words.add(word)
 
 
-def construct_index(documents):
+def add_document_tedtalk(document, docID, positional_index, bigram_index):
+    all_words = set()
+    description, title = document[0], document[1]
+    add_header_positional_index(description, "description", docID, positional_index, all_words)
+    add_header_positional_index(title, "title", docID, positional_index, all_words)
+    bigram_index = get_bigram_index(all_words, bigram_index)
+    return positional_index, bigram_index
+
+
+def delete_document_tedtalk(document, docID, positional_index):
+    description, title = document[0], document[1]
+    for word in description:
+        del positional_index[word]["description"][docID]
+
+
+def get_positional_index_tedtalk(documents):
     tedTalk_positional_index = {}
     all_words = set()
 
     for docID in range(len(documents)):
         description, title = documents[docID][0], documents[docID][1]
-        get_header_positional_index(description, "description", docID, tedTalk_positional_index, all_words)
-        get_header_positional_index(title, "title", docID, tedTalk_positional_index, all_words)
+        add_header_positional_index(description, "description", docID, tedTalk_positional_index, all_words)
+        add_header_positional_index(title, "title", docID, tedTalk_positional_index, all_words)
 
-    bigram_index = {}
+    return tedTalk_positional_index, all_words
+
+
+def get_bigram_index(all_words, bigram_index=None):
+    if bigram_index is None:
+        bigram_index = {}
     for word in all_words:
         word_bigrams = get_word_ngrams(word, 2)
         for bigram in word_bigrams:
             if bigram not in bigram_index:
                 bigram_index[bigram] = []
             bigram_index[bigram] += [word]
+    return bigram_index
 
-    print(bigram_index)
-    return 0
+
+def construct_index(documents):
+    tedTalk_positional_index, all_words = get_positional_index_tedtalk(documents)
+    bigram_index = get_bigram_index(all_words)
+    return tedTalk_positional_index, bigram_index
 
 
 with open('data/tokenized_tedTalk.txt', encoding='utf-8') as f:
