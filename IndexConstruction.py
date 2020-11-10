@@ -10,54 +10,38 @@ def get_word_ngrams(word, n):
     return ngrams
 
 
+def get_header_positional_index(text, header, docID, index, all_words):
+    for posID in range(len(text)):
+        word = text[posID]
+        if word not in index:
+            index[word] = {}
+        if header not in index[word]:
+            index[word][header] = {}
+        if docID not in index[word][header]:
+            index[word][header][docID] = [posID]
+        else:
+            index[word][header][docID] += [posID]
+        all_words.add(word)
+
+
 def construct_index(documents):
-    tedTalk_title_positional_index = {}
-    tedTalk_description_positional_index = {}
+    tedTalk_positional_index = {}
+    all_words = set()
 
-    # TODO: think of doing this as a function so as to remove duplicate code
     for docID in range(len(documents)):
-        # description
-        doc_desc = documents[docID][0]
-        for posID in range(len(doc_desc)):
-            word = doc_desc[posID]
-            if word not in tedTalk_description_positional_index:
-                tedTalk_description_positional_index[word] = {}
-            if docID not in tedTalk_description_positional_index[word]:
-                tedTalk_description_positional_index[word][docID] = []
-            tedTalk_description_positional_index[word][docID] += [posID]
-
-        # title
-        doc_title = documents[docID][1]
-        for posID in range(len(doc_title)):
-            word = doc_desc[posID]
-            if word not in tedTalk_title_positional_index:
-                tedTalk_title_positional_index[word] = {}
-            if docID not in tedTalk_title_positional_index[word]:
-                tedTalk_title_positional_index[word][docID] = []
-            tedTalk_title_positional_index[word][docID] += [posID]
-
-    print(tedTalk_description_positional_index)
-    print(tedTalk_title_positional_index)
-
-    # 1. positional  index
-    # traverse the elements (document) in data
-    # for each document do:
-    #   word = data[docID][i][ind]
-    #   if i == 0: index = tedTalk_description_index
-    #   else if i == 1: index = tedTalk_title_index
-    #   if word not in index: index[word] = {}
-    #   index[word][id] += [ind]
+        description, title = documents[docID][0], documents[docID][1]
+        get_header_positional_index(description, "description", docID, tedTalk_positional_index, all_words)
+        get_header_positional_index(title, "title", docID, tedTalk_positional_index, all_words)
 
     bigram_index = {}
+    for word in all_words:
+        word_bigrams = get_word_ngrams(word, 2)
+        for bigram in word_bigrams:
+            if bigram not in bigram_index:
+                bigram_index[bigram] = []
+            bigram_index[bigram] += [word]
 
-    # 2. bigram
-    # traverse elements in all indexes
-    # for each word in index do:
-    #   word_bigrams = get_word_ngrams(2)
-    #   for each bigram in word_bigram do:
-    #     if bigram not in bigram_index: bigram_index[bigram] = {}
-    #     bigram_index[bigram] += [word]
-
+    print(bigram_index)
     return 0
 
 
