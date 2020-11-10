@@ -1,5 +1,7 @@
 import pandas as pd
 data = pd.read_csv("C:/Users/abahr/PycharmProjects/MIRproj/project_phase1/data/ted_talks.csv")
+
+
 def prepare_text(data):
     data_desc_title=data[['description','title']]
     data_desc_title_ls=data_desc_title.values.tolist()
