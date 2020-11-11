@@ -82,19 +82,19 @@ def remove_stopwords(tokenized_lemmatized_pages):
 # parse an xml file by name
 
 mydoc = minidom.parse('C:/Users/abahr/PycharmProjects/MIRproj/project_phase1/data/Persian.xml')
-
-items = mydoc.getElementsByTagName('text')
+textORtitle='text'
+items = mydoc.getElementsByTagName(textORtitle)
 
 pages_data=[items[i].firstChild.data for i in range (len(items))]
 
 tokenized_lemmatized_pages= prepare_text(pages_data)
 tokenized_lemmatized_removed_stop_words_pages=remove_stopwords(tokenized_lemmatized_pages)
 
-with open('C:/Users/abahr/PycharmProjects/data/tokenized_persian.txt', 'w',encoding='utf-8') as f:
+with open('C:/Users/abahr/PycharmProjects/MIR/data/tokenized_titles_persian.txt', 'w',encoding='utf-8') as f:
     for page in tokenized_lemmatized_removed_stop_words_pages:
         f.write("%s\n" % page)
 
-with open('C:/Users/abahr/PycharmProjects/data/tokenized_persian.txt',encoding='utf-8') as f:
+with open('C:/Users/abahr/PycharmProjects/MIR/data/tokenized_titles_persian.txt',encoding='utf-8') as f:
     lines = f.read().splitlines()
 tokenized_lemmatized_removed_stop_words_persian=[]
 
