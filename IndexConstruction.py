@@ -1,4 +1,5 @@
 from ast import literal_eval
+import json
 # TODO: think about docID
 # TODO: think about deleting documents and how to update bigram
 
@@ -9,6 +10,19 @@ def get_word_ngrams(word, n):
         left, right = max(0, i - n + 1), i + 1
         ngrams += [word[left:right]]
     return ngrams
+
+
+def write_index_to_file(index, name):
+    file = open(name, "w")
+    json.dump(index, file)
+    file.close()
+
+
+def read_index_from_file(name):
+    file = open(name, "r")
+    output = file.read()
+    file.close()
+    return output
 
 
 def add_document(document, docID, positional_index, bigram_index):
@@ -73,5 +87,12 @@ documents = []
 for line in lines:
     documents.append(list(literal_eval(line)))
 
-construct_index(documents[:3])
+positional_index, bigram_index = construct_index(documents[:3])
+write_index_to_file(positional_index, "positional_index.json")
+write_index_to_file(bigram_index, "bigram_index.json")
+
+
+
+
+
 
