@@ -1,5 +1,5 @@
 from ast import literal_eval
-import json
+import pickle
 # TODO: think about docID
 # TODO: think about deleting documents and how to update bigram
 
@@ -13,16 +13,16 @@ def get_word_ngrams(word, n):
 
 
 def write_index_to_file(index, name):
-    file = open(name, "w")
-    json.dump(index, file)
+    file = open(name, 'wb')
+    pickle.dump(index, file)
     file.close()
 
 
 def read_index_from_file(name):
-    file = open(name, "r")
-    output = file.read()
+    file = open(name, 'rb')
+    index = pickle.load(file)
     file.close()
-    return output
+    return index
 
 
 def add_document(document, docID, positional_index, bigram_index):
@@ -87,9 +87,9 @@ documents = []
 for line in lines:
     documents.append(list(literal_eval(line)))
 
-positional_index, bigram_index = construct_index(documents[:3])
-write_index_to_file(positional_index, "positional_index.json")
-write_index_to_file(bigram_index, "bigram_index.json")
+positional_index, bigram_index = construct_index(documents)
+write_index_to_file(positional_index, "positional_index.pkl")
+write_index_to_file(bigram_index, "bigram_index.pkl")
 
 
 
