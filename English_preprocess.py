@@ -78,6 +78,11 @@ def remove_stop_words_english(tokenized_lemmatized):
 
     number_of_stop_words = 10
     stop_words = [i[0] for i in list_of_words_frequency][:number_of_stop_words]
+
+    with open('C:/Users/abahr/PycharmProjects/MIR/data/stop_words_english.txt', 'w', encoding='utf-8') as f:
+        for page in stop_words:
+            f.write("%s\n" % page)
+
     tokenized_lemmatized_removed_stop_words = []
     for data in tokenized_lemmatized:
         lemmatized_tokenized_removed_stop_words_desc = [word for word in data[0] if word not in stop_words]
@@ -128,10 +133,17 @@ def string_preProcess_english(str):
         lemmatized_tokenized.append(lemmatizer.lemmatize(word, get_wordnet_pos(word)))
 
     lemmatized_tokenized= [word for word in lemmatized_tokenized if word.isalnum()]
+    with open('C:/Users/abahr/PycharmProjects/MIR/data/stop_words_english.txt', encoding='utf-8') as f:
+        lines = f.read().splitlines()
+    stop_words = lines
+    import ast
+
+    tokenized_lemmatized_removed_stop_words_str = [word for word in lemmatized_tokenized if
+                                                   word not in stop_words]
+    return tokenized_lemmatized_removed_stop_words_str
 
 
 
-    return lemmatized_tokenized
 
 #
 # tokenized_lemmatized=prepare_text(data)

@@ -10,15 +10,14 @@ def prepare_text_persian(pages_data):
 
     tokenized_pages=[]
     for page in pages_data:
-      tokenized_page=""
-      for letter in page:
-        m = re.search('^[آ-ی]$', letter)
-        if(m is None):
-          tokenized_page+=" "
-        else:
-          tokenized_page+=letter
-      tokenized_pages.append(tokenized_page)
-
+        tokenized_page = ""
+        for letter in page:
+            m = re.search('^[آ-ی]$', letter)
+            if (m is None):
+                tokenized_page += " "
+            else:
+                tokenized_page += letter
+        tokenized_pages.append(tokenized_page)
 
     #######lemmatize, stemming######
 
@@ -34,15 +33,16 @@ def prepare_text_persian(pages_data):
     #   tokenized_stemmed_pages.append(tokenized_stemmed_page)
 
     lemmatizer = Lemmatizer()
-    tokenized_lemmatized_pages=[]
-    for tokenized_page in tokenized_pages :
-      tokenized_lemmatized_page=[]
-      for word in tokenized_page.split():
-        if(len(lemmatizer.lemmatize(word).split("#"))==1):
-          tokenized_lemmatized_page.append(lemmatizer.lemmatize(word).split("#")[0])
-        else:
-          tokenized_lemmatized_page.append(lemmatizer.lemmatize(word).split("#")[1])
-      tokenized_lemmatized_pages.append(tokenized_lemmatized_page)
+    tokenized_lemmatized_pages = []
+    for tokenized_page in tokenized_pages:
+        tokenized_lemmatized_page = []
+        for word in tokenized_page.split():
+            if (len(lemmatizer.lemmatize(word).split("#")) == 1):
+                tokenized_lemmatized_page.append(lemmatizer.lemmatize(word).split("#")[0])
+            else:
+                tokenized_lemmatized_page.append(lemmatizer.lemmatize(word).split("#")[1])
+        tokenized_lemmatized_pages.append(tokenized_lemmatized_page)
+
     return tokenized_lemmatized_pages
 
 
@@ -69,7 +69,12 @@ def remove_stopwords_persian(tokenized_lemmatized_pages):
     list_of_words_frequency = sorted(list_of_words_frequency, key=lambda l: l[1], reverse=True)
 
     number_of_stop_words = 13
+
     stop_words = [i[0] for i in list_of_words_frequency][:number_of_stop_words]
+    with open('C:/Users/abahr/PycharmProjects/MIR/data/stop_words_persian.txt', 'w', encoding='utf-8') as f:
+        for page in stop_words:
+            f.write("%s\n" % page)
+
 
     tokenized_lemmatized_removed_stop_words_pages = []
     for tokenized_lemmatized_page in tokenized_lemmatized_pages:
@@ -78,6 +83,15 @@ def remove_stopwords_persian(tokenized_lemmatized_pages):
         tokenized_lemmatized_removed_stop_words_pages.append(tokenized_lemmatized_removed_stop_words_page)
     return tokenized_lemmatized_removed_stop_words_pages
 
+def remove_stopwords_title_persian(title_tokenized_lemmatized_pages):
+
+    with open('C:/Users/abahr/PycharmProjects/MIR/data/stop_words_persian.txt', encoding='utf-8') as f:
+        lines = f.read().splitlines()
+    stop_words = lines
+
+    tokenized_lemmatized_removed_stop_words_title = [word for word in title_tokenized_lemmatized_pages if
+                                                    word not in stop_words]
+    return tokenized_lemmatized_removed_stop_words_title
 
 def merge_text_title_and_add_id_persian(title_tokenized_lemmatized_removed_stop_words_pages,text_tokenized_lemmatized_removed_stop_words_pages):
     merged_id_text_title = []
@@ -103,7 +117,14 @@ def string_preProcess_persian(str):
             tokenized_lemmatized_str.append(lemmatizer.lemmatize(word).split("#")[0])
         else:
             tokenized_lemmatized_str.append(lemmatizer.lemmatize(word).split("#")[1])
-    return tokenized_lemmatized_str
+    with open('C:/Users/abahr/PycharmProjects/MIR/data/stop_words_persian.txt', encoding='utf-8') as f:
+        lines = f.read().splitlines()
+    stop_words = lines
+    import ast
+
+    tokenized_lemmatized_removed_stop_words_str = [word for word in tokenized_lemmatized_str if
+                                                    word not in stop_words]
+    return tokenized_lemmatized_removed_stop_words_str
 
 
 
