@@ -90,9 +90,3 @@ for line in lines:
 positional_index, bigram_index = construct_index(documents)
 write_index_to_file(positional_index, "positional_index.pkl")
 write_index_to_file(bigram_index, "bigram_index.pkl")
-
-
-
-
-
-

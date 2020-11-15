@@ -1,75 +1,169 @@
-from struct import pack, unpack
-from math import log
 from IndexConstruction import read_index_from_file, write_index_to_file
-# TODO: think about how to infer zero :-?
+from bitarray import bitarray
+# from sys import getsizeof, byteorder
 
 
-def vb_encode_number(number):
-    vb = []
-    while True:
-        vb += [number % 128]
-        if number < 128:
-            break
-        number //= 128
-    vb[0] += 128
-    vb.reverse()
-    return pack('%dB' % len(vb), *vb)
+class Compressor:
+    def __init__(self, index=None):
+        self.positional_index = index
+        self.compressed = {}
+        self.decompressed = {}
+
+    def encode_postings(self, postings):
+        g = []
+        prev_posID = 0
+        for posID in postings:
+            g += self.encode(posID - prev_posID)
+            prev_posID = posID
+        return g
+
+    def compress_header(self, term, header):
+        if header not in self.positional_index[term]:
+            return
+        self.compressed[term][header] = {}
+        for docID in self.positional_index[term][header]:
+            postings = self.positional_index[term][header][docID]
+            self.compressed[term][header][docID] = self.encode_postings(postings)
+
+    def decompress_header(self, term, header):
+        if header not in self.compressed[term]:
+            return
+        self.decompressed[term][header] = {}
+        for docID in self.compressed[term][header]:
+            postings = self.compressed[term][header][docID]
+            self.decompressed[term][header][docID] = self.decode_postings(postings)
+
+    def compress(self):
+        for term in self.positional_index:
+            self.compressed[term] = {}
+            self.compress_header(term, "title")
+            self.compress_header(term, "text")
+
+    def set_compressed(self, compressed):
+        self.compressed = compressed
+
+    def decompress(self):
+        if self.compressed is None:
+            return
+        for term in self.compressed:
+            self.decompressed[term] = {}
+            self.decompress_header(term, "title")
+            self.decompress_header(term, "text")
+
+    def check_accuracy_header(self, term, header):
+        if header not in self.positional_index[term]:
+            return header not in self.decompressed[term]
+        for docID in self.positional_index[term][header]:
+            if docID not in self.decompressed[term][header]:
+                return False
+            if self.decompressed[term][header][docID] != \
+                    self.positional_index[term][header][docID]:
+                return False
+        return True
+
+    def check_accuracy(self):
+        for term in self.positional_index:
+            if not self.check_accuracy_header(term, "title"):
+                print("title not accurate for " + term)
+                print(self.decompressed[term]["title"])
+                print(self.positional_index[term]["title"])
+                return False
+            if not self.check_accuracy_header(term, "text"):
+                print("text not accurate for " + term)
+                print(self.decompressed[term]["text"])
+                print(self.positional_index[term]["text"])
+                return False
+        return True
+
+    def decode_postings(self, postings):
+        pass
+
+    def encode(self, param):
+        pass
 
 
-def vb_encode(numbers):
-    vb = []
-    prev_number = 0
-    for number in numbers:
-        vb += [vb_encode_number(number - prev_number)]
-        prev_number = number
-    return b"".join(vb)
+class GammaCode(Compressor):
+    def __init__(self, index=None):
+        super().__init__(index)
+
+    def get_offset(self, number):
+        if number == 1:
+            return bitarray('')
+        return bitarray(bin(number)[2:])[1:]
+
+    def encode(self, number):
+        offset = self.get_offset(number)
+        unary = bitarray('1' * len(offset))
+        return bitarray(unary + bitarray('0') + offset)
+
+    def decode_postings(self, postings):
+        reading_unary, reading_offset = True, False
+        ids = []
+        length, number, power_of_two = 0, 0, 0
+        for b in postings:
+            if reading_unary:
+                if b:
+                    length += 1
+                else:
+                    if length == 0:
+                        ids += [1]
+                    else:
+                        reading_unary, reading_offset = False, True
+                        power_of_two = 2 ** length
+            elif reading_offset:
+                number *= 2
+                number += b
+                length -= 1
+                if length <= 0:
+                    ids += [number + power_of_two]
+                    number, power_of_two = 0, 0
+                    reading_unary, reading_offset = True, False
+
+        if power_of_two > 0:
+            ids += [power_of_two]
+        for i in range(1, len(ids)):
+            ids[i] += ids[i - 1]
+        return ids
 
 
-# TODO: change to cumsum
-def vb_decode(vb):
-    vb = unpack('%dB' % len(vb), vb)
-    curr, decoded = 0, []
-    for byte in vb:
-        curr *= 128
-        if byte < 128:
-            curr += byte
-        else:
-            curr += (byte - 128)
-            decoded += [curr]
-            curr = 0
-    return decoded
+class VariableByteCode(Compressor):
+
+    def __init__(self, index=None):
+        super().__init__(index)
+
+    def encode(self, number):
+        vb = []
+        while True:
+            vb = [number % 128] + vb
+            if number < 128:
+                break
+            number //= 128
+        vb[-1] += 128
+        return bytearray(vb)
+
+    def decode_postings(self, postings):
+        ids, curr_gap = [], 0
+        for b in bytearray(postings):
+            curr_gap *= 128
+            if b < 128:
+                curr_gap += int(b)
+            else:
+                curr_gap += (int(b) - 128)
+                ids += [curr_gap]
+                curr_gap = 0
+        for i in range(1, len(ids)):
+            ids[i] += ids[i - 1]
+        return ids
 
 
-# TODO: special case for zero
-def gamma_encoding_get_offset(number):
-    length = int(log(number, 2))
-    return length, number - 2 ** length
+positional_index = read_index_from_file("positional_index.pkl")
 
+vb = VariableByteCode(positional_index)
+vb.compress()
+vb.decompress()
+write_index_to_file(vb.compressed, "positional_index_vb.pkl")
 
-def gamma_encoding_get_unary(number):
-    return 2 ** int(log(number, 2)) - 1
-
-
-def gamma_encode_number(number):
-    unary = gamma_encoding_get_unary(number)
-    length, offset = gamma_encoding_get_offset(number)
-    return (unary << (length + 1)) + offset
-
-
-def gamma_encode(numbers):
-    gamma = ''
-    for number in numbers:
-        gamma += bin(gamma_encode_number(number))
-    return gamma
-
-
-def vb_encode_index(index):
-    for word in index.keys():
-        if "title" in index[word]:
-            for docID in index[word]["title"]:
-                postings = index[word]["title"][docID]
-                index[word]["title"][docID] = vb_encode(postings)
-        if "text" in index[word]:
-            for docID in index[word]["text"]:
-                postings = index[word]["text"][docID]
-                index[word]["text"][docID] = vb_encode(postings)
+g = GammaCode(positional_index)
+g.compress()
+g.decompress()
+write_index_to_file(g.compressed, "positional_index_gamma.pkl")
