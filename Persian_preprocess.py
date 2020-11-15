@@ -1,11 +1,11 @@
 from __future__ import unicode_literals
-from xml.dom import minidom
+
 import re
 
 from hazm import *
 import ast
 
-def prepare_text(pages_data):
+def prepare_text_persian(pages_data):
     ##### tokenize, normalization, delete punct######
 
     tokenized_pages=[]
@@ -46,7 +46,7 @@ def prepare_text(pages_data):
     return tokenized_lemmatized_pages
 
 
-def remove_stopwords(tokenized_lemmatized_pages):
+def remove_stopwords_persian(tokenized_lemmatized_pages):
     ########remove stopwords##########
 
     # def remove_stop_words(tokenized_lemmatized):
@@ -79,38 +79,38 @@ def remove_stopwords(tokenized_lemmatized_pages):
     return tokenized_lemmatized_removed_stop_words_pages
 
 
-def merge_text_title_and_add_id(title_tokenized_lemmatized_removed_stop_words_pages,text_tokenized_lemmatized_removed_stop_words_pages):
+def merge_text_title_and_add_id_persian(title_tokenized_lemmatized_removed_stop_words_pages,text_tokenized_lemmatized_removed_stop_words_pages):
     merged_id_text_title = []
 
     for i in range(len(title_tokenized_lemmatized_removed_stop_words_pages)):
-        merged_id_text_title.append([i, text_tokenized_lemmatized_removed_stop_words_pages[i],
+        merged_id_text_title.append([i+1, text_tokenized_lemmatized_removed_stop_words_pages[i],
                                      title_tokenized_lemmatized_removed_stop_words_pages[i]])
     return merged_id_text_title
 # parse an xml file by name
-#text
-mydoc = minidom.parse('C:/Users/abahr/PycharmProjects/MIRproj/project_phase1/data/Persian.xml')
-items_text = mydoc.getElementsByTagName('text')
+# #text
+# mydoc = minidom.parse('C:/Users/abahr/PycharmProjects/MIRproj/project_phase1/data/Persian.xml')
+# items_text = mydoc.getElementsByTagName('text')
+#
+# pages_text_data=[items_text[i].firstChild.data for i in range (len(items_text))]
+#
+# text_tokenized_lemmatized_pages= prepare_text(pages_text_data)
+# text_tokenized_lemmatized_removed_stop_words_pages=remove_stopwords(text_tokenized_lemmatized_pages)
+#
+# #title
+# items_title = mydoc.getElementsByTagName('title')
+#
+# pages_title_data=[items_title[i].firstChild.data for i in range (len(items_title))]
+#
+# title_tokenized_lemmatized_pages= prepare_text(pages_title_data)
+# title_tokenized_lemmatized_removed_stop_words_pages=remove_stopwords(title_tokenized_lemmatized_pages)
+#
+#
+# merged_id_text_title=merge_text_title_and_add_id(title_tokenized_lemmatized_removed_stop_words_pages,text_tokenized_lemmatized_removed_stop_words_pages)
 
-pages_text_data=[items_text[i].firstChild.data for i in range (len(items_text))]
-
-text_tokenized_lemmatized_pages= prepare_text(pages_text_data)
-text_tokenized_lemmatized_removed_stop_words_pages=remove_stopwords(text_tokenized_lemmatized_pages)
-
-#title
-items_title = mydoc.getElementsByTagName('title')
-
-pages_title_data=[items_title[i].firstChild.data for i in range (len(items_title))]
-
-title_tokenized_lemmatized_pages= prepare_text(pages_title_data)
-title_tokenized_lemmatized_removed_stop_words_pages=remove_stopwords(title_tokenized_lemmatized_pages)
-
-
-merged_id_text_title=merge_text_title_and_add_id(title_tokenized_lemmatized_removed_stop_words_pages,text_tokenized_lemmatized_removed_stop_words_pages)
-
-
-with open('C:/Users/abahr/PycharmProjects/MIR/data/tokenized_persian.txt', 'w',encoding='utf-8') as f:
-    for page in merged_id_text_title:
-        f.write("%s\n" % page)
+#
+# with open('C:/Users/abahr/PycharmProjects/MIR/data/tokenized_persian.txt', 'w',encoding='utf-8') as f:
+#     for page in merged_id_text_title:
+#         f.write("%s\n" % page)
 
 # with open('C:/Users/abahr/PycharmProjects/MIR/data/tokenized_persian.txt',encoding='utf-8') as f:
 #     lines = f.read().splitlines()

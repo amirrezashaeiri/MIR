@@ -2,7 +2,7 @@ import pandas as pd
 data = pd.read_csv("C:/Users/abahr/PycharmProjects/MIRproj/project_phase1/data/ted_talks.csv")
 
 
-def prepare_text(data):
+def prepare_text_english(data):
     data_desc_title=data[['description','title']]
     data_desc_title_ls=data_desc_title.values.tolist()
 
@@ -59,7 +59,7 @@ def prepare_text(data):
 
         tokenized_lemmatized.append([lemmatized_tokenized_desc, lemmatized_tokenized_title])
     return tokenized_lemmatized
-def remove_stop_words(tokenized_lemmatized):
+def remove_stop_words_english(tokenized_lemmatized):
     ######stop words#######
     list_of_words_frequency = []
     for data in tokenized_lemmatized:
@@ -89,19 +89,21 @@ def remove_stop_words(tokenized_lemmatized):
     return tokenized_lemmatized_removed_stop_words
 
 
-def add_id(tokenized_lemmatized_removed_stop_words):
+def add_id_english(tokenized_lemmatized_removed_stop_words):
     merged_id_english = []
 
     for i in range(len(tokenized_lemmatized_removed_stop_words)):
         merged_id_english.append(
-            [i, tokenized_lemmatized_removed_stop_words[i][0], tokenized_lemmatized_removed_stop_words[i][1]])
+            [i+1, tokenized_lemmatized_removed_stop_words[i][0], tokenized_lemmatized_removed_stop_words[i][1]])
     return merged_id_english
-tokenized_lemmatized=prepare_text(data)
-tokenized_lemmatized_removed_stop_words=remove_stop_words(tokenized_lemmatized)
-merged_id_english=add_id(tokenized_lemmatized_removed_stop_words)
-with open('C:/Users/abahr/PycharmProjects/MIR/data/tedTalk_Preprocessed.txt', 'w',encoding='utf-8') as f:
-        for page in merged_id_english:
-            f.write("%s\n" % page)
+
+#
+# tokenized_lemmatized=prepare_text(data)
+# tokenized_lemmatized_removed_stop_words=remove_stop_words(tokenized_lemmatized)
+# merged_id_english=add_id(tokenized_lemmatized_removed_stop_words)
+# with open('C:/Users/abahr/PycharmProjects/MIR/data/tedTalk_Preprocessed.txt', 'w',encoding='utf-8') as f:
+#         for page in merged_id_english:
+#             f.write("%s\n" % page)
 
 # with open('C:/Users/abahr/PycharmProjects/MIR/data/tedTalk_Preprocessed.txt',encoding='utf-8') as f:
 #     lines = f.read().splitlines()
