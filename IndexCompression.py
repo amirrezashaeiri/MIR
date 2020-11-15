@@ -1,6 +1,6 @@
 from IndexConstruction import read_index_from_file, write_index_to_file
 from bitarray import bitarray
-# from sys import getsizeof, byteorder
+from sys import getsizeof
 
 
 class Compressor:
@@ -10,12 +10,7 @@ class Compressor:
         self.decompressed = {}
 
     def encode_postings(self, postings):
-        g = []
-        prev_posID = 0
-        for posID in postings:
-            g += self.encode(posID - prev_posID)
-            prev_posID = posID
-        return g
+        pass
 
     def compress_header(self, term, header):
         if header not in self.positional_index[term]:
@@ -75,6 +70,9 @@ class Compressor:
                 return False
         return True
 
+    def compare_sizes(self):
+        pass
+
     def decode_postings(self, postings):
         pass
 
@@ -125,6 +123,18 @@ class GammaCode(Compressor):
             ids[i] += ids[i - 1]
         return ids
 
+    def compare_sizes(self):
+        print("original: " + str(getsizeof(self.positional_index)))
+        print("Gamma compressed: " + str(getsizeof(self.compressed)))
+
+    def encode_postings(self, postings):
+        g = bitarray()
+        prev_posID = 0
+        for posID in postings:
+            g += self.encode(posID - prev_posID)
+            prev_posID = posID
+        return g
+
 
 class VariableByteCode(Compressor):
 
@@ -141,6 +151,14 @@ class VariableByteCode(Compressor):
         vb[-1] += 128
         return bytearray(vb)
 
+    def encode_postings(self, postings):
+        g = []
+        prev_posID = 0
+        for posID in postings:
+            g += self.encode(posID - prev_posID)
+            prev_posID = posID
+        return g
+
     def decode_postings(self, postings):
         ids, curr_gap = [], 0
         for b in bytearray(postings):
@@ -155,15 +173,31 @@ class VariableByteCode(Compressor):
             ids[i] += ids[i - 1]
         return ids
 
+    def compare_sizes(self):
+        print("original: " + str(getsizeof(self.positional_index)))
+        print("VB compressed: " + str(getsizeof(self.compressed)))
 
-positional_index = read_index_from_file("positional_index.pkl")
 
-vb = VariableByteCode(positional_index)
-vb.compress()
-vb.decompress()
-write_index_to_file(vb.compressed, "positional_index_vb.pkl")
+positional_index_tedTalks = read_index_from_file("positional_index_tedTalks.pkl")
 
-g = GammaCode(positional_index)
-g.compress()
-g.decompress()
-write_index_to_file(g.compressed, "positional_index_gamma.pkl")
+vb_tedTalks = VariableByteCode(positional_index_tedTalks)
+vb_tedTalks.compress()
+vb_tedTalks.decompress()
+write_index_to_file(vb_tedTalks.compressed, "positional_index_tedTalks_vb.pkl")
+
+gamma_tedTalks = GammaCode(positional_index_tedTalks)
+gamma_tedTalks.compress()
+gamma_tedTalks.decompress()
+write_index_to_file(gamma_tedTalks.compressed, "positional_index_tedTalks_gamma.pkl")
+
+positional_index_persian = read_index_from_file("positional_index_persian.pkl")
+
+vb_persian = VariableByteCode(positional_index_persian)
+vb_persian.compress()
+vb_persian.decompress()
+write_index_to_file(vb_persian.compressed, "positional_index_persian_vb.pkl")
+
+gamma_persian = GammaCode(positional_index_persian)
+gamma_persian.compress()
+gamma_persian.decompress()
+write_index_to_file(gamma_persian.compressed, "positional_index_persian_gamma.pkl")

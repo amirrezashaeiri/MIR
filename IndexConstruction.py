@@ -56,9 +56,9 @@ def add_header_positional_index(words, header, docID, index):
 
 def get_positional_index(documents):
     positional_index = {}
-    for docID in range(len(documents)):
-        add_header_positional_index(documents[docID][0], "text", docID, positional_index)
-        add_header_positional_index(documents[docID][1], "title", docID, positional_index)
+    for document in documents:
+        add_header_positional_index(document[1], "text", document[0], positional_index)
+        add_header_positional_index(document[2], "title", document[0], positional_index)
     return positional_index
 
 
@@ -81,12 +81,20 @@ def construct_index(documents):
     return positional_index, bigram_index
 
 
-with open('data/tokenized_tedTalk.txt', encoding='utf-8') as f:
-    lines = f.read().splitlines()
-documents = []
-for line in lines:
-    documents.append(list(literal_eval(line)))
+tedTalks = open('data/tokenized_tedTalk_with_id.txt', encoding='utf-8')
+tedTalks_documents = []
+for line in tedTalks.read().splitlines():
+    tedTalks_documents.append(list(literal_eval(line)))
 
-positional_index, bigram_index = construct_index(documents)
-write_index_to_file(positional_index, "positional_index.pkl")
-write_index_to_file(bigram_index, "bigram_index.pkl")
+pos_index_tedtalks, bigram_index_tedtalks = construct_index(tedTalks_documents)
+write_index_to_file(pos_index_tedtalks, "positional_index_tedTalks.pkl")
+write_index_to_file(bigram_index_tedtalks, "bigram_index_tedTalks.pkl")
+
+persian = open('data/tokenized_persian_with_id.txt', encoding='utf-8')
+persian_documents = []
+for line in persian.read().splitlines():
+    persian_documents.append(list(literal_eval(line)))
+
+pos_index_persian, bigram_index_persian = construct_index(persian_documents)
+write_index_to_file(pos_index_persian, "positional_index_persian.pkl")
+write_index_to_file(bigram_index_persian, "bigram_index_persian.pkl")
