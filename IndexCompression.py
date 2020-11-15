@@ -1,6 +1,7 @@
 from IndexConstruction import read_index_from_file, write_index_to_file
-from bitarray import bitarray
-from sys import getsizeof
+from sys import getsizeof, byteorder
+from math import ceil
+import pickle
 
 
 class Compressor:
@@ -70,14 +71,18 @@ class Compressor:
                 return False
         return True
 
-    def compare_sizes(self):
-        pass
-
     def decode_postings(self, postings):
         pass
 
     def encode(self, param):
         pass
+
+    def compare(self):
+        before, after = getsizeof(pickle.dumps(self.positional_index)), \
+                        getsizeof(pickle.dumps(self.compressed))
+        print("Before: ", before, "(B))")
+        print("After Variable Bytes compression:", after, "(B)")
+        print("difference:", after - before, "(B)")
 
 
 class GammaCode(Compressor):
@@ -86,18 +91,20 @@ class GammaCode(Compressor):
 
     def get_offset(self, number):
         if number == 1:
-            return bitarray('')
-        return bitarray(bin(number)[2:])[1:]
+            return ''
+        return str(bin(number)[2:])[1:]
 
     def encode(self, number):
         offset = self.get_offset(number)
-        unary = bitarray('1' * len(offset))
-        return bitarray(unary + bitarray('0') + offset)
+        unary = '1' * len(offset)
+        g = unary + '0' + offset
+        return int(g, 2).to_bytes(ceil(len(g) / 8), byteorder)
 
     def decode_postings(self, postings):
         reading_unary, reading_offset = True, False
         ids = []
         length, number, power_of_two = 0, 0, 0
+        postings = str(format(int.from_bytes(postings, byteorder), 'b'))
         for b in postings:
             if reading_unary:
                 if b:
@@ -123,12 +130,8 @@ class GammaCode(Compressor):
             ids[i] += ids[i - 1]
         return ids
 
-    def compare_sizes(self):
-        print("original: " + str(getsizeof(self.positional_index)))
-        print("Gamma compressed: " + str(getsizeof(self.compressed)))
-
     def encode_postings(self, postings):
-        g = bitarray()
+        g = []
         prev_posID = 0
         for posID in postings:
             g += self.encode(posID - prev_posID)
@@ -173,31 +176,35 @@ class VariableByteCode(Compressor):
             ids[i] += ids[i - 1]
         return ids
 
-    def compare_sizes(self):
-        print("original: " + str(getsizeof(self.positional_index)))
-        print("VB compressed: " + str(getsizeof(self.compressed)))
 
-
-positional_index_tedTalks = read_index_from_file("positional_index_tedTalks.pkl")
+positional_index_tedTalks = read_index_from_file("data/positional_index_tedTalks.pkl")
 
 vb_tedTalks = VariableByteCode(positional_index_tedTalks)
 vb_tedTalks.compress()
 vb_tedTalks.decompress()
-write_index_to_file(vb_tedTalks.compressed, "positional_index_tedTalks_vb.pkl")
+print("result of Variable Bytes encoding for Ted Talks:")
+vb_tedTalks.compare()
+write_index_to_file(vb_tedTalks.compressed, "data/positional_index_tedTalks_vb.pkl")
 
 gamma_tedTalks = GammaCode(positional_index_tedTalks)
 gamma_tedTalks.compress()
 gamma_tedTalks.decompress()
-write_index_to_file(gamma_tedTalks.compressed, "positional_index_tedTalks_gamma.pkl")
+print("result of Gamma encoding for Ted Talks:")
+gamma_tedTalks.compare()
+write_index_to_file(gamma_tedTalks.compressed, "data/positional_index_tedTalks_gamma.pkl")
 
-positional_index_persian = read_index_from_file("positional_index_persian.pkl")
+positional_index_persian = read_index_from_file("data/positional_index_persian.pkl")
 
 vb_persian = VariableByteCode(positional_index_persian)
 vb_persian.compress()
 vb_persian.decompress()
-write_index_to_file(vb_persian.compressed, "positional_index_persian_vb.pkl")
+print("result of Variable Bytes encoding for persian XMLs:")
+vb_persian.compare()
+write_index_to_file(vb_persian.compressed, "data/positional_index_persian_vb.pkl")
 
 gamma_persian = GammaCode(positional_index_persian)
 gamma_persian.compress()
 gamma_persian.decompress()
-write_index_to_file(gamma_persian.compressed, "positional_index_persian_gamma.pkl")
+print("result of Gamma encoding encoding for persian XMLs:")
+gamma_persian.compare()
+write_index_to_file(gamma_persian.compressed, "data/positional_index_persian_gamma.pkl")

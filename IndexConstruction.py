@@ -81,20 +81,31 @@ def construct_index(documents):
     return positional_index, bigram_index
 
 
-tedTalks = open('data/tokenized_tedTalk_with_id.txt', encoding='utf-8')
+def get_postings_list(term, index, header):
+    return index[term][header].keys()
+
+
+def get_positional_ids(term, header, index, docID=None):
+    if docID is None:
+        return index[term][header]
+    return index[term][header][docID]
+
+
+tedTalks = open('data/tedTalk_Preprocessed.txt', encoding='utf-8')
 tedTalks_documents = []
 for line in tedTalks.read().splitlines():
     tedTalks_documents.append(list(literal_eval(line)))
 
 pos_index_tedtalks, bigram_index_tedtalks = construct_index(tedTalks_documents)
-write_index_to_file(pos_index_tedtalks, "positional_index_tedTalks.pkl")
-write_index_to_file(bigram_index_tedtalks, "bigram_index_tedTalks.pkl")
+write_index_to_file(pos_index_tedtalks, "data/positional_index_tedTalks.pkl")
+write_index_to_file(bigram_index_tedtalks, "data/bigram_index_tedTalks.pkl")
 
-persian = open('data/tokenized_persian_with_id.txt', encoding='utf-8')
+
+persian = open('data/persian_Preprocessed.txt', encoding='utf-8')
 persian_documents = []
 for line in persian.read().splitlines():
     persian_documents.append(list(literal_eval(line)))
 
 pos_index_persian, bigram_index_persian = construct_index(persian_documents)
-write_index_to_file(pos_index_persian, "positional_index_persian.pkl")
-write_index_to_file(bigram_index_persian, "bigram_index_persian.pkl")
+write_index_to_file(pos_index_persian, "data/positional_index_persian.pkl")
+write_index_to_file(bigram_index_persian, "data/bigram_index_persian.pkl")
