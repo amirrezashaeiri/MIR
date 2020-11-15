@@ -79,25 +79,44 @@ def remove_stopwords(tokenized_lemmatized_pages):
     return tokenized_lemmatized_removed_stop_words_pages
 
 
+def merge_text_title_and_add_id(title_tokenized_lemmatized_removed_stop_words_pages,text_tokenized_lemmatized_removed_stop_words_pages):
+    merged_id_text_title = []
+
+    for i in range(len(title_tokenized_lemmatized_removed_stop_words_pages)):
+        merged_id_text_title.append([i, text_tokenized_lemmatized_removed_stop_words_pages[i],
+                                     title_tokenized_lemmatized_removed_stop_words_pages[i]])
+    return merged_id_text_title
 # parse an xml file by name
-
+#text
 mydoc = minidom.parse('C:/Users/abahr/PycharmProjects/MIRproj/project_phase1/data/Persian.xml')
-textORtitle='text'
-items = mydoc.getElementsByTagName(textORtitle)
+items_text = mydoc.getElementsByTagName('text')
 
-pages_data=[items[i].firstChild.data for i in range (len(items))]
+pages_text_data=[items_text[i].firstChild.data for i in range (len(items_text))]
 
-tokenized_lemmatized_pages= prepare_text(pages_data)
-tokenized_lemmatized_removed_stop_words_pages=remove_stopwords(tokenized_lemmatized_pages)
+text_tokenized_lemmatized_pages= prepare_text(pages_text_data)
+text_tokenized_lemmatized_removed_stop_words_pages=remove_stopwords(text_tokenized_lemmatized_pages)
 
-with open('C:/Users/abahr/PycharmProjects/MIR/data/tokenized_titles_persian.txt', 'w',encoding='utf-8') as f:
-    for page in tokenized_lemmatized_removed_stop_words_pages:
+#title
+items_title = mydoc.getElementsByTagName('title')
+
+pages_title_data=[items_title[i].firstChild.data for i in range (len(items_title))]
+
+title_tokenized_lemmatized_pages= prepare_text(pages_title_data)
+title_tokenized_lemmatized_removed_stop_words_pages=remove_stopwords(title_tokenized_lemmatized_pages)
+
+
+merged_id_text_title=merge_text_title_and_add_id(title_tokenized_lemmatized_removed_stop_words_pages,text_tokenized_lemmatized_removed_stop_words_pages)
+
+
+with open('C:/Users/abahr/PycharmProjects/MIR/data/tokenized_persian.txt', 'w',encoding='utf-8') as f:
+    for page in merged_id_text_title:
         f.write("%s\n" % page)
 
-with open('C:/Users/abahr/PycharmProjects/MIR/data/tokenized_titles_persian.txt',encoding='utf-8') as f:
-    lines = f.read().splitlines()
-tokenized_lemmatized_removed_stop_words_persian=[]
-
-for line in lines:
-  l = list(ast.literal_eval(line))
-  tokenized_lemmatized_removed_stop_words_persian.append(l)
+# with open('C:/Users/abahr/PycharmProjects/MIR/data/tokenized_persian.txt',encoding='utf-8') as f:
+#     lines = f.read().splitlines()
+# persian_preProcessed=[]
+# import ast
+# for line in lines:
+#   l = list(ast.literal_eval(line))
+#   persian_preProcessed.append(l)
+#

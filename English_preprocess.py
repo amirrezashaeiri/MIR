@@ -87,20 +87,28 @@ def remove_stop_words(tokenized_lemmatized):
         tokenized_lemmatized_removed_stop_words.append(
             [lemmatized_tokenized_removed_stop_words_desc, lemmatized_tokenized_removed_stop_words_title])
     return tokenized_lemmatized_removed_stop_words
+
+
+def add_id(tokenized_lemmatized_removed_stop_words):
+    merged_id_english = []
+
+    for i in range(len(tokenized_lemmatized_removed_stop_words)):
+        merged_id_english.append(
+            [i, tokenized_lemmatized_removed_stop_words[i][0], tokenized_lemmatized_removed_stop_words[i][1]])
+    return merged_id_english
 tokenized_lemmatized=prepare_text(data)
 tokenized_lemmatized_removed_stop_words=remove_stop_words(tokenized_lemmatized)
-with open('C:/Users/abahr/PycharmProjects/MIRproj/project_phase1/data/tokenized_tedTalk.txt', 'w',encoding='utf-8') as f:
-    for item in tokenized_lemmatized_removed_stop_words:
-        f.write("%s\n" % item)
+merged_id_english=add_id(tokenized_lemmatized_removed_stop_words)
+with open('C:/Users/abahr/PycharmProjects/MIR/data/tedTalk_Preprocessed.txt', 'w',encoding='utf-8') as f:
+        for page in merged_id_english:
+            f.write("%s\n" % page)
 
-with open('C:/Users/abahr/PycharmProjects/MIRproj/project_phase1/data/tokenized_tedTalk.txt',encoding='utf-8') as f:
-    lines = f.read().splitlines()
-tokenized_lemmatized_removed_stop_words_tedTalk_desc_title=[]
-import ast
-for line in lines:
-  l = list(ast.literal_eval(line))
-  tokenized_lemmatized_removed_stop_words_tedTalk_desc_title.append(l)
-
-
-
+# with open('C:/Users/abahr/PycharmProjects/MIR/data/tedTalk_Preprocessed.txt',encoding='utf-8') as f:
+#     lines = f.read().splitlines()
+# tedTalk_preProcessed=[]
+# import ast
+# for line in lines:
+#   l = list(ast.literal_eval(line))
+#   tedTalk_preProcessed.append(l)
+#
 
