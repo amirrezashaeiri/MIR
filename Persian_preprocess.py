@@ -86,6 +86,27 @@ def merge_text_title_and_add_id_persian(title_tokenized_lemmatized_removed_stop_
         merged_id_text_title.append([i+1, text_tokenized_lemmatized_removed_stop_words_pages[i],
                                      title_tokenized_lemmatized_removed_stop_words_pages[i]])
     return merged_id_text_title
+
+def string_preProcess_persian(str):
+    tokenized_str = ""
+    for letter in str:
+        m = re.search('^[آ-ی]$', letter)
+        if (m is None):
+            tokenized_str += " "
+        else:
+            tokenized_str += letter
+    lemmatizer = Lemmatizer()
+
+    tokenized_lemmatized_str = []
+    for word in tokenized_str.split():
+        if (len(lemmatizer.lemmatize(word).split("#")) == 1):
+            tokenized_lemmatized_str.append(lemmatizer.lemmatize(word).split("#")[0])
+        else:
+            tokenized_lemmatized_str.append(lemmatizer.lemmatize(word).split("#")[1])
+    return tokenized_lemmatized_str
+
+
+
 # parse an xml file by name
 # #text
 # mydoc = minidom.parse('C:/Users/abahr/PycharmProjects/MIRproj/project_phase1/data/Persian.xml')

@@ -97,6 +97,42 @@ def add_id_english(tokenized_lemmatized_removed_stop_words):
             [i+1, tokenized_lemmatized_removed_stop_words[i][0], tokenized_lemmatized_removed_stop_words[i][1]])
     return merged_id_english
 
+def string_preProcess_english(str):
+    from nltk.tokenize import word_tokenize
+    tokenized_str = word_tokenize(str.lower())
+    import nltk
+    nltk.download('wordnet')
+    import nltk
+    nltk.download('averaged_perceptron_tagger')
+    nltk.download("punkt")
+
+    from nltk.stem import WordNetLemmatizer
+
+    lemmatizer = WordNetLemmatizer()
+    from nltk.corpus import wordnet
+
+    def get_wordnet_pos(word):
+        """Map POS tag to first character lemmatize() accepts"""
+        tag = nltk.pos_tag([word])[0][1][0].upper()
+        tag_dict = {"J": wordnet.ADJ,
+                    "N": wordnet.NOUN,
+                    "V": wordnet.VERB,
+                    "R": wordnet.ADV}
+
+        return tag_dict.get(tag, wordnet.NOUN)
+
+    lemmatizer = WordNetLemmatizer()
+
+    lemmatized_tokenized=[]
+    for word in tokenized_str:
+        lemmatized_tokenized.append(lemmatizer.lemmatize(word, get_wordnet_pos(word)))
+
+    lemmatized_tokenized= [word for word in lemmatized_tokenized if word.isalnum()]
+
+
+
+    return lemmatized_tokenized
+
 #
 # tokenized_lemmatized=prepare_text(data)
 # tokenized_lemmatized_removed_stop_words=remove_stop_words(tokenized_lemmatized)
