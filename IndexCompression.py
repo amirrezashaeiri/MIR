@@ -177,34 +177,4 @@ class VariableByteCode(Compressor):
         return ids
 
 
-positional_index_tedTalks = read_index_from_file("data/positional_index_tedTalks.pkl")
 
-vb_tedTalks = VariableByteCode(positional_index_tedTalks)
-vb_tedTalks.compress()
-vb_tedTalks.decompress()
-print("result of Variable Bytes encoding for Ted Talks:")
-vb_tedTalks.compare()
-write_index_to_file(vb_tedTalks.compressed, "data/positional_index_tedTalks_vb.pkl")
-
-gamma_tedTalks = GammaCode(positional_index_tedTalks)
-gamma_tedTalks.compress()
-gamma_tedTalks.decompress()
-print("result of Gamma encoding for Ted Talks:")
-gamma_tedTalks.compare()
-write_index_to_file(gamma_tedTalks.compressed, "data/positional_index_tedTalks_gamma.pkl")
-
-positional_index_persian = read_index_from_file("data/positional_index_persian.pkl")
-
-vb_persian = VariableByteCode(positional_index_persian)
-vb_persian.compress()
-vb_persian.decompress()
-print("result of Variable Bytes encoding for persian XMLs:")
-vb_persian.compare()
-write_index_to_file(vb_persian.compressed, "data/positional_index_persian_vb.pkl")
-
-gamma_persian = GammaCode(positional_index_persian)
-gamma_persian.compress()
-gamma_persian.decompress()
-print("result of Gamma encoding encoding for persian XMLs:")
-gamma_persian.compare()
-write_index_to_file(gamma_persian.compressed, "data/positional_index_persian_gamma.pkl")

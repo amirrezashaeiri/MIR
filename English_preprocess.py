@@ -1,21 +1,22 @@
 import pandas as pd
-data = pd.read_csv("C:/Users/abahr/PycharmProjects/MIRproj/project_phase1/data/ted_talks.csv")
+
+# data = pd.read_csv("C:/Users/abahr/PycharmProjects/MIRproj/project_phase1/data/ted_talks.csv")
 
 
 def prepare_text_english(data):
-    data_desc_title=data[['description','title']]
-    data_desc_title_ls=data_desc_title.values.tolist()
+    data_desc_title = data[['description', 'title']]
+    data_desc_title_ls = data_desc_title.values.tolist()
 
     ##### tokenization, casefolding#####
     import nltk
     nltk.download('punkt')
 
     from nltk.tokenize import word_tokenize
-    tokenized=[]
+    tokenized = []
     for data in data_desc_title_ls:
-      tokenized_desc=word_tokenize(data[0].lower())
-      tokenized_title=word_tokenize(data[1].lower())
-      tokenized.append([tokenized_desc, tokenized_title])
+        tokenized_desc = word_tokenize(data[0].lower())
+        tokenized_title = word_tokenize(data[1].lower())
+        tokenized.append([tokenized_desc, tokenized_title])
 
     ###### normalization, lemmatization,and removing punctuation marks########
     import nltk
@@ -29,7 +30,6 @@ def prepare_text_english(data):
     lemmatizer = WordNetLemmatizer()
     from nltk.corpus import wordnet
 
-
     def get_wordnet_pos(word):
         """Map POS tag to first character lemmatize() accepts"""
         tag = nltk.pos_tag([word])[0][1][0].upper()
@@ -39,7 +39,6 @@ def prepare_text_english(data):
                     "R": wordnet.ADV}
 
         return tag_dict.get(tag, wordnet.NOUN)
-
 
     lemmatizer = WordNetLemmatizer()
 
@@ -59,6 +58,8 @@ def prepare_text_english(data):
 
         tokenized_lemmatized.append([lemmatized_tokenized_desc, lemmatized_tokenized_title])
     return tokenized_lemmatized
+
+
 def remove_stop_words_english(tokenized_lemmatized):
     ######stop words#######
     list_of_words_frequency = []
@@ -74,7 +75,7 @@ def remove_stop_words_english(tokenized_lemmatized):
             else:
                 list_of_words_frequency[[i[0] for i in list_of_words_frequency].index(word)][1] += 1
 
-    list_of_words_frequency=sorted(list_of_words_frequency,key=lambda l:l[1], reverse=True)
+    list_of_words_frequency = sorted(list_of_words_frequency, key=lambda l: l[1], reverse=True)
 
     number_of_stop_words = 10
     stop_words = [i[0] for i in list_of_words_frequency][:number_of_stop_words]
@@ -99,8 +100,9 @@ def add_id_english(tokenized_lemmatized_removed_stop_words):
 
     for i in range(len(tokenized_lemmatized_removed_stop_words)):
         merged_id_english.append(
-            [i+1, tokenized_lemmatized_removed_stop_words[i][0], tokenized_lemmatized_removed_stop_words[i][1]])
+            [i + 1, tokenized_lemmatized_removed_stop_words[i][0], tokenized_lemmatized_removed_stop_words[i][1]])
     return merged_id_english
+
 
 def string_preProcess_english(str):
     from nltk.tokenize import word_tokenize
@@ -128,11 +130,11 @@ def string_preProcess_english(str):
 
     lemmatizer = WordNetLemmatizer()
 
-    lemmatized_tokenized=[]
+    lemmatized_tokenized = []
     for word in tokenized_str:
         lemmatized_tokenized.append(lemmatizer.lemmatize(word, get_wordnet_pos(word)))
 
-    lemmatized_tokenized= [word for word in lemmatized_tokenized if word.isalnum()]
+    lemmatized_tokenized = [word for word in lemmatized_tokenized if word.isalnum()]
     with open('C:/Users/abahr/PycharmProjects/MIR/data/stop_words_english.txt', encoding='utf-8') as f:
         lines = f.read().splitlines()
     stop_words = lines
@@ -141,9 +143,6 @@ def string_preProcess_english(str):
     tokenized_lemmatized_removed_stop_words_str = [word for word in lemmatized_tokenized if
                                                    word not in stop_words]
     return tokenized_lemmatized_removed_stop_words_str
-
-
-
 
 #
 # tokenized_lemmatized=prepare_text(data)
@@ -161,4 +160,3 @@ def string_preProcess_english(str):
 #   l = list(ast.literal_eval(line))
 #   tedTalk_preProcessed.append(l)
 #
-

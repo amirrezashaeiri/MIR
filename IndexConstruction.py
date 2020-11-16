@@ -91,11 +91,6 @@ def get_positional_ids(term, header, index, docID=None):
     return index[term][header][docID]
 
 
-tedTalks = open('data/tedTalk_Preprocessed.txt', encoding='utf-8')
-tedTalks_documents = []
-for line in tedTalks.read().splitlines():
-    tedTalks_documents.append(list(literal_eval(line)))
-
 pos_index_tedtalks, bigram_index_tedtalks = construct_index(tedTalks_documents)
 write_index_to_file(pos_index_tedtalks, "data/positional_index_tedTalks.pkl")
 write_index_to_file(bigram_index_tedtalks, "data/bigram_index_tedTalks.pkl")
