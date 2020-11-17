@@ -1,12 +1,17 @@
+
 from English_preprocess import *
 from Persian_preprocess import *
 from IndexConstruction import *
 from IndexCompression import *
+from QueryCorrection import *
+from DocumentRetrieval import *
+
 import pandas as pd
 import ast
 from xml.dom import minidom
 
-# Step 1: Preprocess
+
+# Step 1: Preprocess.
 
 data = pd.read_csv("data/ted_talks.csv")
 tokenized_lemmatized = prepare_text_english(data)
@@ -31,7 +36,8 @@ with open('data/persian_preProcessed.txt', 'w', encoding='utf-8') as f:
     for page in merged_id_text_title:
         f.write("%s\n" % page)
 
-# Step 2: Index Construction
+        
+# Step 2: Index Construction.
 tedTalk_preProcessed = []
 with open('data/tedTalk_Preprocessed.txt', encoding='utf-8') as f:
     lines = f.read().splitlines()
@@ -50,7 +56,8 @@ pos_index_persian, bigram_index_persian = construct_index(persian_preProcessed)
 write_index_to_file(pos_index_persian, "data/positional_index_persian.pkl")
 write_index_to_file(bigram_index_persian, "data/bigram_index_persian.pkl")
 
-# Step 3: Index Compression
+
+# Step 3: Index Compression.
 positional_index_tedTalks = read_index_from_file("data/positional_index_tedTalks.pkl")
 
 vb_tedTalks = VariableByteCode(positional_index_tedTalks)
@@ -85,10 +92,47 @@ gamma_persian.compare()
 write_index_to_file(gamma_persian.compressed, "data/positional_index_persian_gamma.pkl")
 
 
-# step 4 (query correction):
-#   input: a query string + bigram index + positional index
-#   output: corrected query :D
-
-# step 5 (document retrieval):
-#   input: a query string
-#   output: list of documents :-? do you only show IDs? do you print out the documents :-? ????
+# Step 4 & 5: Correction, and Retrieval.
+while True:
+    
+    print("""Please enter '1' if you want to correct your query, '2' if you want to find relevent documents, '3' if you want to find relevent documents by proximity, and '404' if you want to exit!""")
+    
+    s = input()
+    
+    if s == '1':
+        print("Please enter your language.")
+        language = input()
+        print("please enter your text.")
+        string = input()
+        
+        output = stringCorrection(string, language)
+        print(output)
+        
+    elif s == '2':
+        print("Please enter your language.")
+        language = input()
+        print("please enter your text.")
+        string = input()
+        
+        output = stringSearch(string, language)
+        print(output)
+        
+    elif s == '3':
+        print("Please enter your language.")
+        language = input()
+        print("please enter your text.")
+        string = input()
+        print("please enter the proximity.")
+        proximity = int(input())
+        
+        output = stringSearchProximity(string, language, proximity=proximity)
+        print(output)
+        
+    elif s == '404':
+        print("END.")
+        break
+        
+    else:
+        print("Please enter a number according to the guideline!")
+        
+      
