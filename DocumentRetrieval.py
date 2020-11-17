@@ -48,14 +48,14 @@ def stringSearch(string, language, ktop=10):
     n_doc = numberOfDocs(language)
     
     
-    vector_space_title = np.zeros(n_doc, n_word)
-    vector_space_text = np.zeros(n_doc, n_word)
+    vector_space_title = np.zeros((n_doc, n_word))
+    vector_space_text = np.zeros((n_doc, n_word))
 
     for i, x in enumerate(main_dic, 0):
-        for y in main_dic[x]['tilte']:
-            vector_space[y, i] += len(main_dic[x]['tilte'][y])
+        for y in main_dic[x]['title']:
+            vector_space[y, i] += len(main_dic[x]['title'][y])
         for y in main_dic[x]['text']:
-            vector_space[y, i] += len(main_dic[x]['tilte'][y])
+            vector_space[y, i] += len(main_dic[x]['title'][y])
     
     
     vector_space_title_idfs = np.log10((1 / np.log10(np.count_nonzero(vector_space_title, axis=0))) * n_word)
