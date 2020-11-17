@@ -42,7 +42,7 @@ def numberOfDocs(language, pre_indexes):
     return res
     
 
-def stringSearch(string, language, ktop=10, indexes, pre_indexes):
+def stringSearch(string, language, indexes, pre_indexes, ktop=10):
     
     main_dic = helpIndex(language, False, indexes)
     words = list(main_dic.keys())
