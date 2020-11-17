@@ -29,7 +29,7 @@ def helpIndex(language, bigram, indexes):
     return dic
 
 
-def stringCorrection(string, language, ktop=10, indexes):
+def stringCorrection(string, language, indexes, ktop=10):
     
     string_split = string.split()
     
