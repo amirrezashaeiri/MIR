@@ -4,7 +4,7 @@ def helpPreProcess(string, language):
     res = ""
     if language == "persian":
         res = string_preProcess_persian(string)   
-    else if language == "english":
+    elif language == "english":
         res = string_preProcess_english(string)
         
     return res
@@ -14,13 +14,13 @@ def helpIndex(language, bigram):
     
     dic = None
     if language == "persian" and bigram:
-        dic = None  
-    else if language == "english" and bigram:
-        dic = None
-    else if language == "persian":
-        dic = None
-    else if language == "english":
-        dic = None
+        dic = bigram_index_persian  
+    elif language == "english" and bigram:
+        dic = bigram_index_tedtalks
+    elif language == "persian":
+        dic = pos_index_persian
+    elif language == "english":
+        dic = pos_index_tedtalks
         
     return dic
 
