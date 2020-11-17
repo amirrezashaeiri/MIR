@@ -1,4 +1,6 @@
 
+import numpy as np
+
 from English_preprocess import *
 from Persian_preprocess import *
 
@@ -40,13 +42,13 @@ def numberOfDocs(language, help):
     return res
     
 
-def stringSearch(string, language, ktop=10):
+def stringSearch(string, language, ktop=10, help1, help2):
     
-    main_dic = helpIndex(language, False)
+    main_dic = helpIndex(language, False, help1)
     words = list(main_dic.keys())
     n_word = len(words)
     
-    n_doc = numberOfDocs(language)
+    n_doc = numberOfDocs(language, help2)
     
     
     vector_space_title = np.zeros((n_doc, n_word))
@@ -92,13 +94,13 @@ def stringSearch(string, language, ktop=10):
     return final
 
 
-def stringSearchProximity(string, language, ktop=10, proximity=50):
+def stringSearchProximity(string, language, ktop=10, proximity=50, help1, help2):
                                        
-    main_dic = helpIndex(language, False)
+    main_dic = helpIndex(language, False, help1)
     words = list(main_dic.keys())
     n_word = len(words)
     
-    n_doc = numberOfDocs(language)
+    n_doc = numberOfDocs(language, help2)
                                 
     
     string_split = helpPreProcess(string, language)
