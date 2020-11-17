@@ -7,7 +7,7 @@ import numpy as np
 #     res = ""
 #     if language == "persian":
 #         res = string_preProcess_persian(string)   
-#     else if language == "english":
+#     elif language == "english":
 #         res = string_preProcess_english(string)
         
 #     return res
@@ -18,11 +18,11 @@ import numpy as np
 #     dic = None
 #     if language == "persian" and bigram:
 #         dic = None  
-#     else if language == "english" and bigram:
+#     elif language == "english" and bigram:
 #         dic = None
-#     else if language == "persian":
+#     elif language == "persian":
 #         dic = None
-#     else if language == "english":
+#     elif language == "english":
 #         dic = None
         
 #     return dic
@@ -33,7 +33,7 @@ def numberOfDocs(language):
     res = ""
     if language == "persian":
         res = len(persian_preProcessed) 
-    else if language == "english":
+    elif language == "english":
         res = len(tedTalk_preProcessed)
         
     return res
@@ -58,8 +58,8 @@ def stringSearch(string, language, ktop=10):
             vector_space[y, i] += len(main_dic[x]['tilte'][y])
     
     
-    vector_space_title_idfs = np.log10((1 / np.log10(np.count_nonzero(vector_space_title, axis=0) * n_word)
-    vector_space_text_idfs = np.log10((1 / np.log10(np.count_nonzero(vector_space_text, axis=0) * n_word)
+    vector_space_title_idfs = np.log10((1 / np.log10(np.count_nonzero(vector_space_title, axis=0))) * n_word)
+    vector_space_text_idfs = np.log10((1 / np.log10(np.count_nonzero(vector_space_text, axis=0))) * n_word)
     
     vector_space_title_tfs = np.log10(1 + vector_space_title)
     vector_space_text_tfs = np.log10(1 + vector_space_text)
@@ -135,12 +135,12 @@ def stringSearchProximity(string, language, ktop=10, proximity=50):
                     if abs(j_th - k_th) <= proximity:
                         flag = True
                         break
-                    else if j_th - k_th < - proximity:
+                    elif j_th - k_th < - proximity:
                         j += 1           
                     else:
                         k += 1
                                        
-                if !flag:
+                if not flag:
                     main_flag = False
                     break
 
