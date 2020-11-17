@@ -14,22 +14,22 @@ def helpPreProcess(string, language):
     return res
 
  
-def helpIndex(language, bigram, help):
+def helpIndex(language, bigram, indexes):
     
     dic = None
     if language == "persian" and bigram:
-        dic = help[0]  
+        dic = indexes[0]  
     elif language == "english" and bigram:
-        dic = help[2]
+        dic = indexes[2]
     elif language == "persian":
-        dic = help[1]
+        dic = indexes[1]
     elif language == "english":
-        dic = help[3]
+        dic = indexes[3]
         
     return dic
 
 
-def stringCorrection(string, language, ktop=10, help):
+def stringCorrection(string, language, ktop=10, indexes):
     
     string_split = string.split()
     
@@ -41,7 +41,7 @@ def stringCorrection(string, language, ktop=10, help):
         if len(xp) == 0 or len(x) == 1:
             res = res + " " + x
         else:
-            xc = wordCorrection(xp[0], helpIndex(language, True, help), ktop)
+            xc = wordCorrection(xp[0], helpIndex(language, True, indexes), ktop)
             if xc == xp[0]:
                 res = res + " " + x
             else:
