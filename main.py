@@ -13,28 +13,28 @@ from xml.dom import minidom
 
 # Step 1: Preprocess.
 
-data = pd.read_csv("data/ted_talks.csv")
-tokenized_lemmatized = prepare_text_english(data)
-tokenized_lemmatized_removed_stop_words = remove_stop_words_english(tokenized_lemmatized)
-merged_id_english = add_id_english(tokenized_lemmatized_removed_stop_words)
-with open('data/tedTalk_Preprocessed.txt', 'w', encoding='utf-8') as f:
-    for page in merged_id_english:
-        f.write("%s\n" % page)
-
-mydoc = minidom.parse('data/Persian.xml')
-items_text = mydoc.getElementsByTagName('text')
-pages_text_data = [items_text[i].firstChild.data for i in range(len(items_text))]
-text_tokenized_lemmatized_pages = prepare_text_persian(pages_text_data)
-text_tokenized_lemmatized_removed_stop_words_pages = remove_stopwords_persian(text_tokenized_lemmatized_pages)
-items_title = mydoc.getElementsByTagName('title')
-pages_title_data = [items_title[i].firstChild.data for i in range(len(items_title))]
-title_tokenized_lemmatized_pages = prepare_text_persian(pages_title_data)
-title_tokenized_lemmatized_removed_stop_words_pages = remove_stopwords_persian(title_tokenized_lemmatized_pages)
-merged_id_text_title = merge_text_title_and_add_id_persian(title_tokenized_lemmatized_removed_stop_words_pages,
-                                                           text_tokenized_lemmatized_removed_stop_words_pages)
-with open('data/persian_preProcessed.txt', 'w', encoding='utf-8') as f:
-    for page in merged_id_text_title:
-        f.write("%s\n" % page)
+# data = pd.read_csv("data/ted_talks.csv")
+# tokenized_lemmatized = prepare_text_english(data)
+# tokenized_lemmatized_removed_stop_words = remove_stop_words_english(tokenized_lemmatized)
+# merged_id_english = add_id_english(tokenized_lemmatized_removed_stop_words)
+# with open('data/tedTalk_Preprocessed.txt', 'w', encoding='utf-8') as f:
+#     for page in merged_id_english:
+#         f.write("%s\n" % page)
+#
+# mydoc = minidom.parse('data/Persian.xml')
+# items_text = mydoc.getElementsByTagName('text')
+# pages_text_data = [items_text[i].firstChild.data for i in range(len(items_text))]
+# text_tokenized_lemmatized_pages = prepare_text_persian(pages_text_data)
+# text_tokenized_lemmatized_removed_stop_words_pages = remove_stopwords_persian(text_tokenized_lemmatized_pages)
+# items_title = mydoc.getElementsByTagName('title')
+# pages_title_data = [items_title[i].firstChild.data for i in range(len(items_title))]
+# title_tokenized_lemmatized_pages = prepare_text_persian(pages_title_data)
+# title_tokenized_lemmatized_removed_stop_words_pages = remove_stopwords_persian(title_tokenized_lemmatized_pages)
+# merged_id_text_title = merge_text_title_and_add_id_persian(title_tokenized_lemmatized_removed_stop_words_pages,
+#                                                            text_tokenized_lemmatized_removed_stop_words_pages)
+# with open('data/persian_preProcessed.txt', 'w', encoding='utf-8') as f:
+#     for page in merged_id_text_title:
+#         f.write("%s\n" % page)
 
         
 # Step 2: Index Construction.

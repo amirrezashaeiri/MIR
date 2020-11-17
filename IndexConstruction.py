@@ -54,9 +54,21 @@ def add_header_positional_index(words, header, docID, index):
             index[word][header][docID] += [posID]
 
 
+def initiate_header(document, index):
+    for word in document:
+        if word not in index:
+            index[word] = {}
+        if "title" not in index[word]:
+            index[word]["title"] = {}
+        if "text" not in index[word]:
+            index[word]["text"] = {}
+
+
 def get_positional_index(documents):
     positional_index = {}
     for document in documents:
+        initiate_header(document[1], positional_index)
+        initiate_header(document[2], positional_index)
         add_header_positional_index(document[1], "text", document[0], positional_index)
         add_header_positional_index(document[2], "title", document[0], positional_index)
     return positional_index
