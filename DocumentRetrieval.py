@@ -32,9 +32,9 @@ def numberOfDocs(language):
     
     res = ""
     if language == "persian":
-        res = 0  
+        res = len(persian_preProcessed) 
     else if language == "english":
-        res = 0
+        res = len(tedTalk_preProcessed)
         
     return res
     
