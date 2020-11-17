@@ -51,8 +51,8 @@ def stringSearch(string, language, indexes, pre_indexes, ktop=10):
     n_doc = numberOfDocs(language, pre_indexes)
     
     
-    vector_space_title = np.zeros((n_doc, n_word))
-    vector_space_text = np.zeros((n_doc, n_word))
+    vector_space_title = np.zeros((n_doc + 1, n_word))
+    vector_space_text = np.zeros((n_doc + 1, n_word))
 
     for i, x in enumerate(main_dic, 0):
         for y in main_dic[x]['title']:
@@ -60,12 +60,14 @@ def stringSearch(string, language, indexes, pre_indexes, ktop=10):
         for y in main_dic[x]['text']:
             vector_space_text[y, i] += len(main_dic[x]['text'][y])
     
-    
+    vector_space_title = 1 + vector_space_title    
+    vector_space_text = 1 + vector_space_text
+
     vector_space_title_idfs = np.log10((1 / np.log10(np.count_nonzero(vector_space_title, axis=0))) * n_word)
     vector_space_text_idfs = np.log10((1 / np.log10(np.count_nonzero(vector_space_text, axis=0))) * n_word)
     
-    vector_space_title_tfs = np.log10(1 + vector_space_title)
-    vector_space_text_tfs = np.log10(1 + vector_space_text)
+    vector_space_title_tfs = np.log10(vector_space_title)
+    vector_space_text_tfs = np.log10(vector_space_text)
     
     vector_space_title_tfidfs = np.multiply(vector_space_title_tfs, vector_space_title_idfs)
     vector_space_text_tfidfs = np.multiply(vector_space_text_tfs, vector_space_text_idfs)
@@ -76,16 +78,20 @@ def stringSearch(string, language, indexes, pre_indexes, ktop=10):
     
     string_split = helpPreProcess(string, language)
     words_dic_tfidfs = {x:string_split.count(x) for x in string_split}
-    norm = Normalization(words_dic_temp.values())
+    norm = Normalization(list(words_dic_tfidfs.values()))
     words_dic_norm = {x:norm[i] for i, x in enumerate(string_split, 0)}
                                        
     
     scores = {}
-    for i in range(n_doc):                          
+    for i in range(n_doc):                      
         s = 0
         for y in words_dic_norm:
-            s += words_dic_norm[y] * vector_space_title_norm[i][words.index(y)]
-            s += words_dic_norm[y] * vector_space_text_norm[i][words.index(y)]
+            try:
+                s += words_dic_norm[y] * vector_space_title_norm[i][words.index(y)]
+                s += words_dic_norm[y] * vector_space_text_norm[i][words.index(y)]
+            except ValueError:
+                continue
+
         scores[i] = s
                                        
     final = sorted(scores, key=scores.get, reverse=True)[:ktop]
@@ -104,6 +110,12 @@ def stringSearchProximity(string, language, indexes, pre_indexes, ktop=10, proxi
                                 
     
     string_split = helpPreProcess(string, language)
+
+    for x in string_split:
+        try:
+            temp = main_dic[x]
+        except KeyError:
+            return "We could not find some of your words in any document."
                                        
     
     min_index = 0
@@ -147,7 +159,7 @@ def stringSearchProximity(string, language, indexes, pre_indexes, ktop=10, proxi
                     main_flag = False
                     break
 
-            except ValueError:
+            except KeyError:
                 main_flag = False
                 break
          
@@ -155,7 +167,7 @@ def stringSearchProximity(string, language, indexes, pre_indexes, ktop=10, proxi
               candidate += [x]
                                        
                                        
-    sorted_docs = stringSearch(string, language, ktop=10000000)
+    sorted_docs = stringSearch(string, language, indexes, pre_indexes, ktop=10000000)
     
     final = []
     for x in sorted_docs:
