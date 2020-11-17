@@ -16,39 +16,39 @@ def helpPreProcess(string, language):
     return res
 
  
-def helpIndex(language, bigram, help):
+def helpIndex(language, bigram, indexes):
     
     dic = None
     if language == "persian" and bigram:
-        dic = help[0]  
+        dic = indexes[0]  
     elif language == "english" and bigram:
-        dic = help[2]
+        dic = indexes[2]
     elif language == "persian":
-        dic = help[1]
+        dic = indexes[1]
     elif language == "english":
-        dic = help[3]
+        dic = indexes[3]
         
     return dic
 
 
-def numberOfDocs(language, help):
+def numberOfDocs(language, pre_indexes):
     
     res = ""
     if language == "persian":
-        res = len(help[0]) 
+        res = len(pre_indexes[0]) 
     elif language == "english":
-        res = len(help[1])
+        res = len(pre_indexes[1])
         
     return res
     
 
-def stringSearch(string, language, ktop=10, help1, help2):
+def stringSearch(string, language, ktop=10, indexes, pre_indexes):
     
-    main_dic = helpIndex(language, False, help1)
+    main_dic = helpIndex(language, False, indexes)
     words = list(main_dic.keys())
     n_word = len(words)
     
-    n_doc = numberOfDocs(language, help2)
+    n_doc = numberOfDocs(language, pre_indexes)
     
     
     vector_space_title = np.zeros((n_doc, n_word))
@@ -94,13 +94,13 @@ def stringSearch(string, language, ktop=10, help1, help2):
     return final
 
 
-def stringSearchProximity(string, language, ktop=10, proximity=50, help1, help2):
+def stringSearchProximity(string, language, ktop=10, proximity=50, indexes, pre_indexes):
                                        
-    main_dic = helpIndex(language, False, help1)
+    main_dic = helpIndex(language, False, indexes)
     words = list(main_dic.keys())
     n_word = len(words)
     
-    n_doc = numberOfDocs(language, help2)
+    n_doc = numberOfDocs(language, pre_indexes)
                                 
     
     string_split = helpPreProcess(string, language)
