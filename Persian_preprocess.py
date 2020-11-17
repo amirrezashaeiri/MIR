@@ -71,7 +71,7 @@ def remove_stopwords_persian(tokenized_lemmatized_pages):
     number_of_stop_words = 13
 
     stop_words = [i[0] for i in list_of_words_frequency][:number_of_stop_words]
-    with open('C:/Users/abahr/PycharmProjects/MIR/data/stop_words_persian.txt', 'w', encoding='utf-8') as f:
+    with open('data/stop_words_persian.txt', 'w', encoding='utf-8') as f:
         for page in stop_words:
             f.write("%s\n" % page)
 
@@ -85,7 +85,7 @@ def remove_stopwords_persian(tokenized_lemmatized_pages):
 
 def remove_stopwords_title_persian(title_tokenized_lemmatized_pages):
 
-    with open('C:/Users/abahr/PycharmProjects/MIR/data/stop_words_persian.txt', encoding='utf-8') as f:
+    with open('data/stop_words_persian.txt', encoding='utf-8') as f:
         lines = f.read().splitlines()
     stop_words = lines
 
@@ -117,7 +117,7 @@ def string_preProcess_persian(str):
             tokenized_lemmatized_str.append(lemmatizer.lemmatize(word).split("#")[0])
         else:
             tokenized_lemmatized_str.append(lemmatizer.lemmatize(word).split("#")[1])
-    with open('C:/Users/abahr/PycharmProjects/MIR/data/stop_words_persian.txt', encoding='utf-8') as f:
+    with open('data/stop_words_persian.txt', encoding='utf-8') as f:
         lines = f.read().splitlines()
     stop_words = lines
     import ast
