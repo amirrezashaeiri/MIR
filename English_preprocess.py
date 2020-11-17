@@ -80,7 +80,7 @@ def remove_stop_words_english(tokenized_lemmatized):
     number_of_stop_words = 10
     stop_words = [i[0] for i in list_of_words_frequency][:number_of_stop_words]
 
-    with open('/data/stop_words_english.txt', 'w', encoding='utf-8') as f:
+    with open('data/stop_words_english.txt', 'w', encoding='utf-8') as f:
         for page in stop_words:
             f.write("%s\n" % page)
 
@@ -135,7 +135,7 @@ def string_preProcess_english(str):
         lemmatized_tokenized.append(lemmatizer.lemmatize(word, get_wordnet_pos(word)))
 
     lemmatized_tokenized = [word for word in lemmatized_tokenized if word.isalnum()]
-    with open('/data/stop_words_english.txt', encoding='utf-8') as f:
+    with open('data/stop_words_english.txt', encoding='utf-8') as f:
         lines = f.read().splitlines()
     stop_words = lines
     import ast
