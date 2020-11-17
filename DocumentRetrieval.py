@@ -1,40 +1,41 @@
 
-import numpy as np
+from English_preprocess import *
+from Persian_preprocess import *
 
 
-# def helpPreProcess(string, language):
-    
-#     res = ""
-#     if language == "persian":
-#         res = string_preProcess_persian(string)   
-#     elif language == "english":
-#         res = string_preProcess_english(string)
-        
-#     return res
-
- 
-# def helpIndex(language, bigram):
-    
-#     dic = None
-#     if language == "persian" and bigram:
-#         dic = None  
-#     elif language == "english" and bigram:
-#         dic = None
-#     elif language == "persian":
-#         dic = None
-#     elif language == "english":
-#         dic = None
-        
-#     return dic
-
-
-def numberOfDocs(language):
+def helpPreProcess(string, language):
     
     res = ""
     if language == "persian":
-        res = len(persian_preProcessed) 
+        res = string_preProcess_persian(string)   
     elif language == "english":
-        res = len(tedTalk_preProcessed)
+        res = string_preProcess_english(string)
+        
+    return res
+
+ 
+def helpIndex(language, bigram, help):
+    
+    dic = None
+    if language == "persian" and bigram:
+        dic = help[0]  
+    elif language == "english" and bigram:
+        dic = help[2]
+    elif language == "persian":
+        dic = help[1]
+    elif language == "english":
+        dic = help[3]
+        
+    return dic
+
+
+def numberOfDocs(language, help):
+    
+    res = ""
+    if language == "persian":
+        res = len(help[0]) 
+    elif language == "english":
+        res = len(help[1])
         
     return res
     
