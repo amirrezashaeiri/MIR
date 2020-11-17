@@ -93,6 +93,10 @@ write_index_to_file(gamma_persian.compressed, "data/positional_index_persian_gam
 
 
 # Step 4 & 5: Correction, and Retrieval.
+
+indexes = [bigram_index_persian, pos_index_persian, bigram_index_tedtalks, pos_index_tedtalks]
+pre_indexes = [persian_preProcessed, tedTalk_preProcessed]
+
 while True:
     
     print("""Please enter '1' if you want to correct your query, '2' if you want to find relevent documents, '3' if you want to find relevent documents by proximity, and '404' if you want to exit!""")
@@ -105,7 +109,7 @@ while True:
         print("please enter your text.")
         string = input()
         
-        output = stringCorrection(string, language)
+        output = stringCorrection(string, language, indexes=indexes)
         print(output)
         
     elif s == '2':
@@ -114,7 +118,7 @@ while True:
         print("please enter your text.")
         string = input()
         
-        output = stringSearch(string, language)
+        output = stringSearch(string, language, indexes=indexes, pre_indexes=pre_indexes)
         print(output)
         
     elif s == '3':
@@ -125,7 +129,7 @@ while True:
         print("please enter the proximity.")
         proximity = int(input())
         
-        output = stringSearchProximity(string, language, proximity=proximity)
+        output = stringSearchProximity(string, language, proximity=proximity, indexes=indexes, pre_indexes=pre_indexes)
         print(output)
         
     elif s == '404':
