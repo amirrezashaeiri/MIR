@@ -37,8 +37,8 @@ def stringCorrection(string, language, ktop=10):
         if len(xp) == 0 or len(x) == 1:
             res = res + " " + x
         else:
-            xc = wordCorrection(xp, helpIndex(language, True), ktop)
-            if xc == xp:
+            xc = wordCorrection(xp[0], helpIndex(language, True), ktop)
+            if xc == xp[0]:
                 res = res + " " + x
             else:
                 res = res + " " + xc
