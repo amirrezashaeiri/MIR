@@ -9,7 +9,7 @@ def prepare_text_english(data):
 
     ##### tokenization, casefolding#####
     import nltk
-    nltk.download('punkt')
+    nltk.download('punkt', quiet=True)
 
     from nltk.tokenize import word_tokenize
     tokenized = []
@@ -20,10 +20,10 @@ def prepare_text_english(data):
 
     ###### normalization, lemmatization,and removing punctuation marks########
     import nltk
-    nltk.download('wordnet')
+    nltk.download('wordnet', quiet=True)
     import nltk
-    nltk.download('averaged_perceptron_tagger')
-    nltk.download("punkt")
+    nltk.download('averaged_perceptron_tagger', quiet=True)
+    nltk.download("punkt", quiet=True)
 
     from nltk.stem import WordNetLemmatizer
 
