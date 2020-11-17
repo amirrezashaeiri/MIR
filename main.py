@@ -80,7 +80,7 @@ write_index_to_file(vb_persian.compressed, "data/positional_index_persian_vb.pkl
 gamma_persian = GammaCode(positional_index_persian)
 gamma_persian.compress()
 gamma_persian.decompress()
-print("result of Gamma encoding encoding for persian XMLs:")
+print("result of Gamma encoding for persian XMLs:")
 gamma_persian.compare()
 write_index_to_file(gamma_persian.compressed, "data/positional_index_persian_gamma.pkl")
 
