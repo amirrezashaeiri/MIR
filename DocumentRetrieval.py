@@ -91,7 +91,7 @@ def stringSearch(string, language, ktop=10):
     return final
 
 
-stringSearchProximity(string, language, ktop=10, proximity=50):
+def stringSearchProximity(string, language, ktop=10, proximity=50):
                                        
     main_dic = helpIndex(language, False)
     words = list(main_dic.keys())
