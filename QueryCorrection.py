@@ -34,7 +34,7 @@ def stringCorrection(string, language, ktop=10):
         
         xp = helpPreProcess(x, language)
         
-        if len(xp) == 0 or len(x) = 1:
+        if len(xp) == 0 or len(x) == 1:
             res = res + " " + x
         else:
             xc = wordCorrection(xp, helpIndex(language, True), ktop)
