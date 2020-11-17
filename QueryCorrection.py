@@ -1,4 +1,8 @@
 
+from English_preprocess import *
+from Persian_preprocess import *
+
+
 def helpPreProcess(string, language):
     
     res = ""
@@ -9,23 +13,23 @@ def helpPreProcess(string, language):
         
     return res
 
-  
-def helpIndex(language, bigram):
+ 
+def helpIndex(language, bigram, help):
     
     dic = None
     if language == "persian" and bigram:
-        dic = bigram_index_persian  
+        dic = help[0]  
     elif language == "english" and bigram:
-        dic = bigram_index_tedtalks
+        dic = help[2]
     elif language == "persian":
-        dic = pos_index_persian
+        dic = help[1]
     elif language == "english":
-        dic = pos_index_tedtalks
+        dic = help[3]
         
     return dic
 
 
-def stringCorrection(string, language, ktop=10):
+def stringCorrection(string, language, ktop=10, help):
     
     string_split = string.split()
     
@@ -37,7 +41,7 @@ def stringCorrection(string, language, ktop=10):
         if len(xp) == 0 or len(x) == 1:
             res = res + " " + x
         else:
-            xc = wordCorrection(xp[0], helpIndex(language, True), ktop)
+            xc = wordCorrection(xp[0], helpIndex(language, True, help), ktop)
             if xc == xp[0]:
                 res = res + " " + x
             else:
