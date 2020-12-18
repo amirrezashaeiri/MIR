@@ -5,7 +5,6 @@ import pandas as pd
 import ast
 from xml.dom import minidom
 
-
 # Step 1: Preprocess.
 
 data = pd.read_csv("data/train.csv")
@@ -24,11 +23,9 @@ with open('data/tedTalk_Preprocessed.txt', 'w', encoding='utf-8') as f:
     for page in merged_id_english:
         f.write("%s\n" % page)
 
-labels=label(data)
+labels = label(data)
 with open('data/labels.txt', 'w', encoding='utf-8') as f:
     for label in labels:
         f.write("%s\n" % label)
 with open('data/labels.txt', 'r', encoding='utf-8') as f:
-    labels=[int(i.replace("\n","")) for i in f.readlines()]
-
-
+    labels = [int(i.replace("\n", "")) for i in f.readlines()]
